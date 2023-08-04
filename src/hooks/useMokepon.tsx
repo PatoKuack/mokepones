@@ -10,68 +10,77 @@ Para resolver este problema, definí una interface para representar la estructur
 interface MokeponType {
   name: string;
   element: string;
-  attack1: { attack: string; damage: number };
-  attack2: { attack: string; damage: number };
-  attack3: { attack: string; damage: number };
+  attack1: { attack: string; damage: number; element: string; };
+  attack2: { attack: string; damage: number; element: string; };
+  attack3: { attack: string; damage: number; element: string; };
   live: number;
   image: string;
 }
-interface attackType {
+interface AttackType {
   attack: string;
   damage: number;
 }
 
-export const useRandomMP = () => {
+export const useMokepon = () => {
 
   const mokeponList: MokeponType[] = [
     {
       name: "Aquarisis",
       element: "water",
-      attack1: {attack: "Ojitos cariñositos", damage: 20},
-      attack2: {attack: "Vozarron", damage: 25},
-      attack3: {attack: "Modo Zen", damage: 40},
+      attack1: {attack: "Ojitos cariñositos", damage: 20, element: "watter"},
+      attack2: {attack: "Vozarron marino", damage: 25, element: "watter"},
+      attack3: {attack: "Buceo Zen", damage: 40, element: "watter"},
       live: 100,
       image: "MPAqualisis.svg"
     },
     {
       name: "Juanergized",
       element: "electric",
-      attack1: {attack: "Fan-attack", damage: 25},
-      attack2: {attack: "Ojos que no ven...", damage: 15},
-      attack3: {attack: "hiper-energizado", damage: 35},
+      attack1: {attack: "ojos que no ven...", damage: 15, element: "electric"},
+      attack2: {attack: "...corazón que lo sentirá", damage: 25, element: "electric"},
+      attack3: {attack: "hiper-energizado", damage: 35, element: "electric"},
       live: 100,
       image: "MPJuanergized.svg"
     },
     {
       name: "Octoscar",
-      element: "physical",
-      attack1: {attack: "Lechetón", damage: 10},
-      attack2: {attack: "Baby-Ha", damage: 35},
-      attack3: {attack: "Ciberataque", damage: 25},
+      element: "psychic",
+      attack1: {attack: "Lechetón", damage: 10, element: "physical"},
+      attack2: {attack: "Baby-Ha", damage: 35, element: "psychic"},
+      attack3: {attack: "Hacker ataque", damage: 25, element: "psychic"},
       live: 150,
       image: "MPOctoscar.svg"
     },
     /* {
       name: "",
       element: "",
-      attack1: {attack: "", damage: 35},
-      attack2: {attack: "", damage: 35},
-      attack3: {attack: "", damage: 35},
+      attack1: {attack: "", damage: 35, element: ""},
+      attack2: {attack: "", damage: 35, element: ""},
+      attack3: {attack: "", damage: 35, element: ""},
       live: 0,
       image: "MP.svg"
     }, */
   ];
 
   const [availableList, setAvailableList] = useState<string[]>(mokeponList.map(moke => moke.name));
-  const [enemy, setEnemy] = useState<MokeponType> ();
+  const [enemyMokepon, setEnemyMokepon] = useState<MokeponType> ();
+  const [userMokepon, setUserMokepon] = useState<MokeponType> ({
+    name: "",
+    element: "",
+    attack1: {attack: "Consistencia resistente", damage: 25, element: "physical"},
+    attack2: {attack: "", damage: 0, element: ""},
+    attack3: {attack: "Duper esfuerzo", damage: 30, element: "physical"},
+    live: 0,
+    image: "MPUser.svg"
+  });
 
   const totMokepones: number = mokeponList.length;
   const getRandomValue = (max: number, min: number): number => {
     return(Math.floor(Math.random() * (max - min + 1) + min));
   }
 
-  // getAEnemy() elimina de availableList un mokepón alatorio y le asigna a "enemy" ese mokepón aleatorio. Si ya no hay mokepones en availableList, se le asigna a en enemy el mokepón Reptax.
-  const getAEnemy = () => {
+  // getAEnemyMokepon() elimina de availableList un mokepón alatorio y le asigna a "enemyMokepon" ese mokepón aleatorio. Si ya no hay mokepones en availableList, se le asigna a en enemyMokepon el mokepón Reptax.
+  const getAEnemyMokepon = () => {
     const newAvailableList = availableList;
     const selectionRandom: number = getRandomValue(totMokepones, 0);
     console.log("selección aleatoria: " + selectionRandom);
@@ -82,31 +91,60 @@ export const useRandomMP = () => {
       newAvailableList.splice(indexToDelete, 1);
       setAvailableList(newAvailableList);
       console.log(availableList);
-      setEnemy(mokeponList.find(e => e.name===currentSelection));
+      setEnemyMokepon(mokeponList.find(e => e.name===currentSelection));
     } else {
-        setEnemy({
-          name: "Reptax",
-          element: "darkness",
-          attack1: { attack: "Desmotivalevolensia", damage: 40 },
-          attack2: { attack: "Modo súper evil", damage: 40 },
-          attack3: { attack: "Trampa maestra", damage: 40 },
-          live: 200,
-          image: "MPReptax.svg"
-        });
-      }
+      setEnemyMokepon({
+        name: "Reptax",
+        element: "darkness",
+        attack1: { attack: "Desmotivalevolensia", damage: 40, element: "darkness" },
+        attack2: { attack: "Modo súper evil", damage: 40, element: "darkness" },
+        attack3: { attack: "Trampa maestra", damage: 40, element: "physical" },
+        live: 200,
+        image: "MPReptax.svg"
+      });
+    }
   }
 
-  const fight = (attackUsed: attackType) => {
-    if(enemy && enemy.live && enemy.live > 0) {
-      const attackedLive: number = enemy.live - attackUsed.damage;
-      setEnemy({ ...enemy, live: attackedLive });
+  // fight() recibe un objeto con los datos del mokepon atacante. Si el atacante es el enemigo, se le resta a la vida del usuario el ataque aleatorio del enemigo. Si el atacante es el usuario, se le reta a la vida del enemigo el attack que se recibe en el segundo parámetro.
+  const fight = (attacked: MokeponType, attack?: AttackType) => {
+    let currentLive: number;
+    const randomAttack: number = getRandomValue(1, 3);
+    if(enemyMokepon && attacked.name === enemyMokepon.name) {
+      if(randomAttack === 1) {
+        currentLive = attacked.live - enemyMokepon.attack1.damage;
+      } else if(randomAttack === 2) {
+        currentLive = attacked.live - enemyMokepon.attack2.damage;
+      } else {
+        currentLive = attacked.live - enemyMokepon.attack3.damage;
+      }
+      setEnemyMokepon({ ...attacked, live: currentLive });
+    } else if(attack && userMokepon && attacked.name === userMokepon.name){
+      currentLive = attacked.live - attack.damage;
+      setUserMokepon({ ...attacked, live: currentLive });
+    } else {
+      console.error(attacked);
     }
+  }
+
+  const getElementAttack = (data: IUserData): IAttackType => {
+    let attackType: IAttackType;
+    if(data.element === "watter") {
+      attackType = {attack: "Chorro de constancia", damage: 35, element: "watter"}
+    } else if(data.element === "fire") {
+      attackType = {attack: "Flama de automotivación", damage: 35, element: "fire"}
+    } else {
+      attackType = {attack: "Brote de dedicación", damage: 35, element: "earth"}
+    }
+    return(attackType);
   }
 
   return {
     fight,
-    getAEnemy,
-    enemy,
-    setEnemy
+    getAEnemyMokepon,
+    enemyMokepon,
+    setEnemyMokepon,
+    userMokepon,
+    setUserMokepon,
+    getElementAttack,
   }
 }

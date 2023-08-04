@@ -1,13 +1,33 @@
-import { Form, UserData } from '../components/Form';
+import { Header } from '../components/Header';
+import { Form } from '../components/Form';
+import { useMokepon } from '../hooks/useMokepon';
+import { useState } from 'react';
 
 function App() {
-  function handleSubmit(formData: UserData) {
-    console.log(formData);
+
+  const { 
+    userMokepon,
+    setUserMokepon, 
+    getElementAttack,
+  } = useMokepon();
+
+  const [showForm, setShowForm] = useState<boolean>(true);
+
+  function handleSubmit(formData: IUserData): void {
+    setUserMokepon({
+      ...userMokepon, 
+      name: formData.name, 
+      element: formData.element, 
+      live: (formData.level/10),
+      attack2: getElementAttack(formData)
+    });
+    setShowForm(false);
   }
 
   return (
     <>
-      <Form onSubmit={handleSubmit} />
+      <Header userMokepon={userMokepon} />
+      {showForm && <Form onSubmit={handleSubmit} />}
     </>
   )
 }

@@ -4,22 +4,16 @@ import { CreateButton } from './CreateButton.tsx';
 /* 
 Había una marca de error en el Form onSubmit={handleSubmit} del archivo App.tsx
 Existia una colisión de nombres en el tipado FormData que se definio aquí y la interface FormData que es una parte intrínseca de JavaScript (utilizada para trabajar con datos de formularios en el objeto FormData).
-Para resolver este problema, simplemente renombré la interface FormData que definí aquí, depués exporté la interface y la importé en App.tsx para utilizarla en la función handleOnSubmit(). 
+Para resolver este problema, simplemente renombré la interface FormData que definí aquí, depués exporté la interface con la palabra "export" antes de la interface y la importé en App.tsx para utilizarla en la función handleOnSubmit(). También se puede crear un tipado global para no exportar el tipado. 
  */
 
 interface FormProps {
-  onSubmit: (data: UserData) => void;
-}
-
-export interface UserData {
-  name: string;
-  element: string;
-  level: number;
+  onSubmit: (data: IUserData) => void;
 }
 
 export const Form = ({ onSubmit }: FormProps) => {
 
-  const [formData, setFormData] = React.useState<UserData>({ name: '', element: '', level: 0 });
+  const [formData, setFormData] = React.useState<IUserData>({ name: '', element: '', level: 0 });
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = event.target;
@@ -63,10 +57,10 @@ export const Form = ({ onSubmit }: FormProps) => {
       </label>
       </div>
       <CreateButton 
-          type = {"submit"}
-          content = {"Seleccionar"}
-          title = {"seleccionar"}
-        />
+        type = {"submit"}
+        content = {"Seleccionar"}
+        title = {"seleccionar"}
+      />
     </form>
   )
 }

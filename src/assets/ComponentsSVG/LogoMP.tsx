@@ -6,7 +6,7 @@ const SvgComponent = (props: SVGProps<SVGSVGElement>) => (
     xmlSpace="preserve"
     x={0}
     y={0}
-    enable-background: accumulate 
+    enable-background: accumulate="true" 
     viewBox="0 0 32 32"
     {...props}
   >
