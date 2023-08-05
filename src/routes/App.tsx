@@ -1,5 +1,6 @@
-import { Header } from '../components/Header';
+import { Nav } from '../components/Nav';
 import { Form } from '../components/Form';
+import { Game } from '../components/Game';
 import { useMokepon } from '../hooks/useMokepon';
 import { useState } from 'react';
 
@@ -26,8 +27,9 @@ function App() {
 
   return (
     <>
-      <Header userMokepon={userMokepon} />
+      <Nav userMokepon={userMokepon} />
       {showForm && <Form onSubmit={handleSubmit} />}
+      {!showForm && <Game userMokepon={userMokepon} />}
     </>
   )
 }

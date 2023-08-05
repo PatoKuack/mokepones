@@ -1,9 +1,9 @@
 interface IMokeponType {
   name: string;
   element: string;
-  attack1: { attack: string; damage: number, element: string };
-  attack2: { attack: string; damage: number, element: string };
-  attack3: { attack: string; damage: number, element: string };
+  attack1: { attack: string; damage: number, element: string, image: string };
+  attack2: { attack: string; damage: number, element: string, image: string };
+  attack3: { attack: string; damage: number, element: string, image: string };
   live: number;
   image: string;
 }
@@ -12,6 +12,7 @@ interface IAttackType {
   attack: string;
   damage: number;
   element: string;
+  image: string;
 }
 
 interface IUserData {

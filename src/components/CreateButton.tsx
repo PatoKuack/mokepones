@@ -3,7 +3,7 @@ import '../index.css';
 
 interface Props {
   type: 'submit' | 'reset' | 'button' | undefined
-  content: string
+  content: string | JSX.Element
   title: string
   className?: string
   onClick?: ()=>void
@@ -12,14 +12,19 @@ interface Props {
 export const CreateButton = (props: Props): JSX.Element => {
   return (
     <>
-      <div className="relative mb-4 hover:brightness-95 ">
-        <button type={props.type} className={`
-          relative px-2 py-2 rounded-full text-base bg-secondary opacity-90 z-10 
-          transition ease-in-out duration-100 
-          active:translate-y-[2px] 
-          sm:px-4sm:font-medium sm:text-lg 
-          ${props.className}
-        `}>
+      <div className="relative mb-4 hover:brightness-95 w-fit ">
+        <button 
+          title={props.title}
+          type={props.type} 
+          onClick={props.onClick}
+          className={`
+            relative px-2 py-2 rounded-full text-base bg-secondary opacity-90 z-10 
+            transition ease-in-out duration-100 
+            active:translate-y-[2px] 
+            sm:px-4 sm:font-medium sm:text-lg 
+            ${props.className}
+          `}
+        >
           {props.content}
           <CreateIcon 
             type={"reflejo"}
