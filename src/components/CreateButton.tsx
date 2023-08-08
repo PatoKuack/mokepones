@@ -12,27 +12,29 @@ interface Props {
 export const CreateButton = (props: Props): JSX.Element => {
   return (
     <>
-      <div className="relative mb-4 hover:brightness-95 w-fit ">
+      <div className="relative mb-4 hover:brightness-95 w-fit">
+        <div className={`absolute top-[6px] left-[-4px] w-[calc(100%+8px)] h-full bg-secondary border-4 border-solid border-quaternary rounded-full pointer-events-none`}></div>
         <button 
           title={props.title}
           type={props.type} 
           onClick={props.onClick}
           className={`
-            relative px-2 py-2 rounded-full text-base bg-secondary opacity-90 z-10 
+            relative px-2 py-2 rounded-full text-base
             transition ease-in-out duration-100 
             active:translate-y-[2px] 
             sm:px-4 sm:font-medium sm:text-lg 
             ${props.className}
           `}
         >
-          {props.content}
-          <CreateIcon 
-            type={"reflejo"}
-            classSVG={"fill-shadow-light dark:fill-shadow-dark h-full -translate-x-full"}
-            classContainer={"absolute top-0 right-0 h-3/4 p-1 opacity-50"}
-          />
+          <div className='absolute top-0 left-0 w-full h-[calc(60%)] rounded-t-full bg-secondary opacity-90 pointer-events-none'></div>
+          <span className='text-transparent pointer-events-none'>{props.content}</span>
+          <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-60'>{props.content}</span>
         </button>
-        <div className={`absolute top-[6px] left-[-4px] w-[calc(100%+8px)] h-full bg-secondary border-4 border-solid border-quaternary rounded-full`}></div>
+        <CreateIcon 
+          type={"reflejo"}
+          classSVG={"fill-shadow-light h-full -translate-x-full pointer-events-none"}
+          classContainer={"absolute top-0 right-0 w-fit h-3/4 p-1 opacity-50"}
+        />
       </div>
     </>
   )

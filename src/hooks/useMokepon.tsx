@@ -22,7 +22,7 @@ export const useMokepon = () => {
   } = useMokeponData();
 
   const [availableList, setAvailableList] = useState<string[]>(mokeponList.map(moke => moke.name));
-  const [enemyMokepon, setEnemyMokepon] = useState<IMokeponType> ();
+  const [enemyMokepon, setEnemyMokepon] = useState<IMokeponType | undefined> (undefined);
   const [userMokepon, setUserMokepon] = useState<IMokeponType> (defaultMokepon);
 
   const getRandomValue = (max: number, min: number): number => {
@@ -33,10 +33,11 @@ export const useMokepon = () => {
   const getAEnemyMokepon = (): void => {
     const newAvailableList = availableList;
     const totMokepones: number = newAvailableList.length;
-    const selectionRandom: number = getRandomValue(totMokepones, 0);
-    console.log("selección aleatoria: " + selectionRandom);
+    const selectionRandom: number = getRandomValue((totMokepones-1), 0);
+    console.log(`Selección aleatoria: ${selectionRandom}: ${newAvailableList[selectionRandom]}`);
+    console.log("queda: " + (newAvailableList.length - 1));
     const currentSelection: string = newAvailableList[selectionRandom];
-    if(newAvailableList.length > 0 || newAvailableList.includes(currentSelection)) {
+    if(newAvailableList.length > 0 && newAvailableList.includes(currentSelection)) {
       const indexToDelete = newAvailableList.indexOf(currentSelection);
       // Se elimina 1 valor, apartir del "index para eliminar"
       newAvailableList.splice(indexToDelete, 1);
@@ -49,38 +50,65 @@ export const useMokepon = () => {
   }
 
   // fight() recibe un objeto con los datos del mokepon atacante. Si el atacante es el enemigo, se le resta a la vida del usuario el ataque aleatorio del enemigo. Si el atacante es el usuario, se le reta a la vida del enemigo el attack que se recibe en el segundo parámetro.
-  const fight = (attacked: IMokeponType, attack?: IAttackType): number => {
+  const fight = (attacked: IMokeponType, attacker: IMokeponType, attack?: number): void => {
     let currentLive: number;
-    const randomAttack: number = getRandomValue(1, 3);
-    if(enemyMokepon && attacked.name === enemyMokepon.name) {
-      if(randomAttack === 1) {
-        currentLive = attacked.live - enemyMokepon.attack1.damage;
-      } else if(randomAttack === 2) {
-        currentLive = attacked.live - enemyMokepon.attack2.damage;
+    let attackType: number;
+    
+    if(enemyMokepon && userMokepon && attacked.name !== "" && attacker.name !== "") {
+      
+      if(typeof(attack) === "number") {
+        attackType = attack;
+        console.log("atacante: usuario")
       } else {
-        currentLive = attacked.live - enemyMokepon.attack3.damage;
+        attackType = getRandomValue(3, 1);
+        console.log("atacante: enemigo")
       }
-      setEnemyMokepon({ ...attacked, live: currentLive });
-      return(currentLive);
-    } else if(attack && userMokepon && attacked.name !== ""){
-      currentLive = attacked.live - attack.damage;
-      setUserMokepon({ ...attacked, live: currentLive });
-      console.log(currentLive)
-      return(currentLive);
-    } else {
-      console.error(attacked);
-      return(attacked.live);
+
+      switch(attackType) {
+        case 1:
+          currentLive = attacked.live - attacker.attack1.damage;
+          console.log("ataque 1 de: " + attacker.attack1.damage)
+          break;
+        case 2:
+          currentLive = attacked.live - attacker.attack2.damage;
+          console.log("ataque 2 de: " + attacker.attack2.damage)
+          break;
+        case 3:
+          currentLive = attacked.live - attacker.attack3.damage;
+          console.log("ataque 3 de: " + attacker.attack3.damage)
+          break;
+        default:
+          currentLive = attacker.live;
+          console.error(attackType);
+          console.error(attacked);
+          console.error(attacker);
+      }
+
+      if(typeof(attack) === "number") {
+        if(attacked.live > 0) {
+          setEnemyMokepon({ ...attacked, live: currentLive });
+        } else {
+          setEnemyMokepon(undefined);
+        }
+        console.log(`${attacker.name} atacó a ${attacked.name} con su ${attackType}° ataque, dejandolo con ${currentLive}`);
+      } else {
+        setUserMokepon({ ...attacked, live: currentLive });
+        console.log(`${attacker.name} atacó a ${attacked.name} con su ${attackType}° ataque, dejandolo con ${currentLive}`);
+      }
     }
   }
 
-  const getElementAttack = (data: IUserData): IAttackType => {
+  const getElementAttack = (typeEl: string): IAttackType => {
     let attackType: IAttackType;
-    if(data.element === "watter") {
+    if(typeEl === "watter") {
       attackType = defaultWatterAttack;
-    } else if(data.element === "fire") {
+      console.log(defaultWatterAttack);
+    } else if(typeEl === "fire") {
       attackType = defaultFireAttack;
+      console.log(defaultFireAttack);
     } else {
       attackType = defaultEarthAttack;
+      console.log(defaultEarthAttack);
     }
     return(attackType);
   }

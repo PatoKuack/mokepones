@@ -7,29 +7,49 @@ import { useState } from 'react';
 function App() {
 
   const { 
-    userMokepon,
-    setUserMokepon, 
+    userMokepon, 
+    setUserMokepon,
+    enemyMokepon,
+    setEnemyMokepon,
     getElementAttack,
+    getAEnemyMokepon,
+    fight,
   } = useMokepon();
 
   const [showForm, setShowForm] = useState<boolean>(true);
 
-  function handleSubmit(formData: IUserData): void {
+  const handleSubmit = (formData: IUserData): void => {
     setUserMokepon({
       ...userMokepon, 
       name: formData.name, 
       element: formData.element, 
       live: (formData.level/10),
-      attack2: getElementAttack(formData)
+      attack2: getElementAttack(formData.element)
     });
     setShowForm(false);
   }
 
+  const handleFight = (attacked: IMokeponType, attacker: IMokeponType, attack?: number): void => {
+    fight(attacked, attacker, attack)
+  }
+
   return (
     <>
-      <Nav userMokepon={userMokepon} />
+      <Nav 
+        userMokepon={userMokepon}
+        enemyMokepon={enemyMokepon} 
+      />
       {showForm && <Form onSubmit={handleSubmit} />}
-      {!showForm && <Game userMokepon={userMokepon} />}
+      {!showForm && <Game 
+        userMokepon={userMokepon}
+        setUserMokepon={setUserMokepon}
+        enemyMokepon={enemyMokepon}
+        setEnemyMokepon={setEnemyMokepon}
+        setShowForm={setShowForm}
+        getAEnemyMokepon={getAEnemyMokepon}
+        fight={fight}
+        handleFight={handleFight}
+      />}
     </>
   )
 }
