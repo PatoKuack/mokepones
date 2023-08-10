@@ -54,7 +54,7 @@ export const useMokepon = () => {
     let currentLive: number;
     let attackType: number;
     
-    if(enemyMokepon && userMokepon && attacked.name !== "" && attacker.name !== "") {
+    if(enemyMokepon && userMokepon && attacked.name !== "" && attacker.name !== "" && attacker.live > 0) {
       
       if(typeof(attack) === "number") {
         attackType = attack;
@@ -114,6 +114,7 @@ export const useMokepon = () => {
   }
 
   return {
+    availableList,
     fight,
     getAEnemyMokepon,
     enemyMokepon,
