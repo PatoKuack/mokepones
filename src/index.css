@@ -8,6 +8,10 @@
   font-weight: 400;
 } */
 
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serifsans-serif;
+}
+
 input[type="text"], input[type="number"] {
   padding-left: 2px;
 }

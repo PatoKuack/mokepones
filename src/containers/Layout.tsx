@@ -22,7 +22,7 @@ export const Layout = (props: PropsWithChildren<MyProps>) => {
 
   return (
     <>
-      <div className='w-screen min-h-screen bg-background-light dark:bg-background-dark bg-principal-img bg-cover bg-no-repeat bg-center'>
+      <div className='w-screen min-h-screen bg-background-light dark:bg-background-dark bg-principal-img bg-cover bg-no-repeat bg-center font-mono'>
         {props.children}
       </div>
     </>

@@ -1,5 +1,6 @@
 import { Nav } from '../components/Nav';
 import { Form } from '../components/Form';
+import { Battle } from '../components/Battle';
 import { Game } from '../components/Game';
 import { useMokepon } from '../hooks/useMokepon';
 import { useState } from 'react';
@@ -7,17 +8,16 @@ import { useState } from 'react';
 function App() {
 
   const { 
-    availableList, 
     userMokepon, 
     setUserMokepon,
     enemyMokepon,
-    setEnemyMokepon,
     getElementAttack,
     getAEnemyMokepon,
     fight,
   } = useMokepon();
 
   const [showForm, setShowForm] = useState<boolean>(true);
+  const [showBattle, setShowBattle] = useState<boolean>(false);
   const [totLiveUser, setTotLiveUser] = useState<number>(0);
 
   const handleSubmit = (formData: IUserData): void => {
@@ -45,16 +45,21 @@ function App() {
       />
       {showForm && <Form onSubmit={handleSubmit} />}
       {!showForm && <Game 
-        availableList={availableList}
+        userMokepon={userMokepon}
+        setUserMokepon={setUserMokepon}
+        getAEnemyMokepon={getAEnemyMokepon}
+        totLiveUser={totLiveUser}
+        setShowBattle={setShowBattle}
+      />}
+      {showBattle && <Battle 
         userMokepon={userMokepon}
         setUserMokepon={setUserMokepon}
         enemyMokepon={enemyMokepon}
-        setEnemyMokepon={setEnemyMokepon}
-        setShowForm={setShowForm}
-        getAEnemyMokepon={getAEnemyMokepon}
+        setShowBattle={setShowBattle}
         handleFight={handleFight}
         totLiveUser={totLiveUser}
       />}
+      {/* location.reload */}
     </>
   )
 }

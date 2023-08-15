@@ -22,7 +22,7 @@ export const useMokepon = () => {
   } = useMokeponData();
 
   const [availableList, setAvailableList] = useState<string[]>(mokeponList.map(moke => moke.name));
-  const [enemyMokepon, setEnemyMokepon] = useState<IMokeponType | undefined> (undefined);
+  const [enemyMokepon, setEnemyMokepon] = useState<IMokeponType> (defaultMokepon);
   const [userMokepon, setUserMokepon] = useState<IMokeponType> (defaultMokepon);
 
   const getRandomValue = (max: number, min: number): number => {
@@ -32,6 +32,7 @@ export const useMokepon = () => {
   // getAEnemyMokepon() elimina de availableList un mokepón alatorio y le asigna a "enemyMokepon" ese mokepón aleatorio. Si ya no hay mokepones en availableList, se le asigna a en enemyMokepon el mokepón Reptax.
   const getAEnemyMokepon = (): void => {
     const newAvailableList = availableList;
+    let currentEnemy: IMokeponType | undefined;
     const totMokepones: number = newAvailableList.length;
     const selectionRandom: number = getRandomValue((totMokepones-1), 0);
     console.log(`Selección aleatoria: ${selectionRandom}: ${newAvailableList[selectionRandom]}`);
@@ -43,9 +44,12 @@ export const useMokepon = () => {
       newAvailableList.splice(indexToDelete, 1);
       setAvailableList(newAvailableList);
       console.log(availableList);
-      setEnemyMokepon(mokeponList.find(e => e.name===currentSelection));
+      currentEnemy = mokeponList.find(e => e.name===currentSelection);
+      if(currentEnemy) {
+        setEnemyMokepon({...currentEnemy, originalLive: currentEnemy.live});
+      }
     } else {
-      setEnemyMokepon(finalBossMokepon);
+      setEnemyMokepon({...finalBossMokepon, originalLive:finalBossMokepon.live});
     }
   }
 
@@ -88,7 +92,7 @@ export const useMokepon = () => {
         if(attacked.live > 0) {
           setEnemyMokepon({ ...attacked, live: currentLive });
         } else {
-          setEnemyMokepon(undefined);
+          setEnemyMokepon(defaultMokepon);
         }
         console.log(`${attacker.name} atacó a ${attacked.name} con su ${attackType}° ataque, dejandolo con ${currentLive}`);
       } else {
